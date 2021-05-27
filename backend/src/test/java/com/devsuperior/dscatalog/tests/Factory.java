@@ -11,7 +11,7 @@ public class Factory {
 
 		Product product = new Product(1L, "Phone", "Good phone", 800.0, "https://img.com/img.png",
 				Instant.parse("2020-10-20T03:00:00Z"));
-		product.getCategories().add(new Category(2L, "Eletronics"));
+		product.getCategories().add(createCategory()); // (new Category(1L, "Eletronics"));
 
 		return product;
 
@@ -20,6 +20,11 @@ public class Factory {
 	public static ProductDTO createProductDTO() {
 		Product product = createProduct();
 		return new ProductDTO(product, product.getCategories());
+	}
+
+	public static Category createCategory() {
+		Category category = new Category(1L, "Eletronics");
+		return category;
 	}
 
 }
