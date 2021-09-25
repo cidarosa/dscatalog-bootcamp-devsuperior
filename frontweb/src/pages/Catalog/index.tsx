@@ -20,7 +20,7 @@ const Catalog = () => {
                 "name": "Computadores"
             }
         ]
-    }
+    };
 
     return (
         <div className="container my-4">
