@@ -1,6 +1,7 @@
 import ContentLoader from 'react-content-loader';
 
 const CardLoader = () => (
+  
   <div className="card-loader-container">
     <ContentLoader
       speed={2}
