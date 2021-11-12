@@ -10,6 +10,7 @@ import { removeAuthData } from 'util/storage';
 
 const Navbar = () => {
   //referencia para contexto global
+  
   const { authContextData, setAuthContextData } = useContext(AuthContext);
 
   useEffect(() => {
