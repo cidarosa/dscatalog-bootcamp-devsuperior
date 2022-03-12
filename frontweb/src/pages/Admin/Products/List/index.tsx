@@ -1,7 +1,10 @@
 import ProductCrudCard from 'components/ProductCrudCard';
+import { Link } from 'react-router-dom';
+
+import './styles.css';
 
 const List = () => {
-  // provisório -> POSTMAN - products/1
+  // provisório -> POSTMAN - productById - products/1
   const product = {
     id: 1,
     name: 'The Lord of the Rings',
@@ -20,15 +23,33 @@ const List = () => {
   };
 
   return (
-    <div>
-      {/* add botão, class do bootstrap */}
-      <button className="btn btn-primary text-white">ADICIONAR</button>
-      <div>Search bar</div>
-      {/* passando o obj para ProductCrudCard */}
-      <ProductCrudCard product={product} />
-      <ProductCrudCard product={product} />
-      <ProductCrudCard product={product} />
-    </div>
+    <>
+      <div className="product-crud-bar-container">
+        {/* add botão, class do bootstrap */}
+        <Link to="/admin/products/create">
+          <button className="btn btn-primary text-white btn-crud-add">
+            ADICIONAR
+          </button>
+        </Link>
+
+        <div className="base-card product-filter-container">Search bar</div>
+        {/* passando o obj para ProductCrudCard */}
+      </div>
+
+      <div className="row">
+        <div className="col-sm-6 col-md-12">
+          <ProductCrudCard product={product} />
+        </div>
+
+        <div className="col-sm-6 col-md-12">
+          <ProductCrudCard product={product} />
+        </div>
+
+        <div className="col-sm-6 col-md-12">
+          <ProductCrudCard product={product} />
+        </div>
+      </div>
+    </>
   );
 };
 export default List;
