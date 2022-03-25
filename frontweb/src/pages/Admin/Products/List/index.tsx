@@ -32,7 +32,7 @@ const List = () => {
   };
 
   return (
-    <>
+    <div className="product-crud-container">
       <div className="product-crud-bar-container">
         {/* add botão, class do bootstrap */}
         <Link to="/admin/products/create">
@@ -58,7 +58,7 @@ const List = () => {
           <ProductCrudCard product={product} />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 export default List;
