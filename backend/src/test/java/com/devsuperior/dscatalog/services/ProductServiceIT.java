@@ -1,4 +1,5 @@
 package com.devsuperior.dscatalog.services;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -14,7 +15,7 @@ import com.devsuperior.dscatalog.repositories.ProductRepository;
 import com.devsuperior.dscatalog.services.exceptions.ResourceNotFoundException;
 
 @SpringBootTest
-@Transactional //dá rollback no DB
+@Transactional // dá rollback no DB
 public class ProductServiceIT {
 
 	// o service não vai ser mockado, vai ser injetado
@@ -59,27 +60,46 @@ public class ProductServiceIT {
 		// página 0, tamanho 10
 		PageRequest pageRequest = PageRequest.of(0, 10);
 
-		/*Page<ProductDTO> result = service.findAllPaged(pageRequest);
+		Page<ProductDTO> result = service.findAllPaged(0L, "", pageRequest);
 
-		Assertions.assertFalse(result.isEmpty()); // testa se page não é vazio
-		Assertions.assertEquals(0, result.getNumber()); // verifica se o número da página é zero - primeira página
-		Assertions.assertEquals(10, result.getSize()); // verifica se tem 10 elementos na página
-		Assertions.assertEquals(countTotalProducts, result.getTotalElements()); // verifica o número total de registros
-*/
+		Assertions.assertFalse(result.isEmpty());
+		Assertions.assertEquals(0, result.getNumber());
+		Assertions.assertEquals(10, result.getSize());
+		Assertions.assertEquals(countTotalProducts, result.getTotalElements());
+
+		/*
+		 * Page<ProductDTO> result = service.findAllPaged(pageRequest);
+		 * 
+		 * Assertions.assertFalse(result.isEmpty()); // testa se page não é vazio
+		 * Assertions.assertEquals(0, result.getNumber()); // verifica se o número da
+		 * página é zero - primeira página Assertions.assertEquals(10,
+		 * result.getSize()); // verifica se tem 10 elementos na página
+		 * Assertions.assertEquals(countTotalProducts, result.getTotalElements()); //
+		 * verifica o número total de registros
+		 */
 	}
-	
+
 	@Test
 	public void findAllPagedShouldReturnEmptyPageWhenPageDoesNotExists() {
 
 		// página 50, tamanho 10
 		PageRequest pageRequest = PageRequest.of(50, 10);
-		//Page<ProductDTO> result = service.findAllPaged(pageRequest);
-		//Assertions.assertTrue(result.isEmpty()); // testa se page é vazio
+		Page<ProductDTO> result = service.findAllPaged(0L, "", pageRequest);
+
+		Assertions.assertTrue(result.isEmpty());
+		// Page<ProductDTO> result = service.findAllPaged(pageRequest);
+		// Assertions.assertTrue(result.isEmpty()); // testa se page é vazio
 	}
-	
+
 	@Test
-	public void findAllPagedShouldReturnSortedPageWhenSortedByName() {		
+	public void findAllPagedShouldReturnSortedPageWhenSortedByName() {
 		PageRequest pageRequest = PageRequest.of(0, 10, Sort.by("name"));
+		Page<ProductDTO> result = service.findAllPaged(0L, "", pageRequest);
+
+		Assertions.assertFalse(result.isEmpty());
+		Assertions.assertEquals("Macbook Pro", result.getContent().get(0).getName());
+		Assertions.assertEquals("PC Gamer", result.getContent().get(1).getName());
+		Assertions.assertEquals("PC Gamer Alfa", result.getContent().get(2).getName());
 		/*
 		 * Page<ProductDTO> result = service.findAllPaged(pageRequest);
 		 * 
@@ -89,7 +109,7 @@ public class ProductServiceIT {
 		 * Assertions.assertEquals("PC Gamer Alfa",
 		 * result.getContent().get(2).getName());
 		 */
-		
-		//testando os primeiro 3 produtos
+
+		// testando os primeiro 3 produtos
 	}
 }
