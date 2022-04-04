@@ -1,31 +1,60 @@
 import { AxiosRequestConfig } from 'axios';
+import { useEffect } from 'react';
 import { useForm } from 'react-hook-form';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 import { Product } from 'types/product';
 import { requestBackend } from 'util/requests';
 import './styles.css';
 
+type UrlParams = {
+  productId: string;
+};
+
 const Form = () => {
+  const { productId } = useParams<UrlParams>();
+
+  const isEditing = productId !== 'create';
+
   const history = useHistory();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
+    // para ver se está editando ou criando um novo produto
+    setValue, //permite definir um valor de algum atributo
   } = useForm<Product>();
+
+  // para fazer no começo qdo o componente for montado
+  useEffect(() => {
+    // se estiver editando, preenche os dados no form
+    if (isEditing) {
+      // carregar os dados do produto - chama requisição do backend - chamando direto
+      requestBackend({ url: `/products/${productId}` }).then((response) => {
+        const product = response.data as Product; //variável product tipado
+
+        setValue('name', product.name);
+        setValue('price', product.price);
+        setValue('description', product.description);
+        setValue('imgUrl', product.imgUrl);
+        setValue('categories', product.categories);
+      });
+    }
+  }, [isEditing, productId, setValue]); //dependências
 
   const onSubmit = (formData: Product) => {
     const data = {
       ...formData,
-      imgUrl:
-        'https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg',
-      categories: [{ id: 1, name: '' }],
+      imgUrl: isEditing
+        ? formData.imgUrl
+        : 'https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg',
+      categories: isEditing ? formData.categories : [{ id: 1, name: '' }],
     };
 
     /* configuração da requesição para salvar o Product */
     const config: AxiosRequestConfig = {
-      method: 'POST',
-      url: '/products',
+      method: isEditing ? 'PUT' : 'POST',
+      url: isEditing ?  `/products/${productId}` : '/products',
       //data: formData, //dados que serão passados
       // data: data, //não precisa colocar qdo o nome da variável é igual ao atributo
       data,
