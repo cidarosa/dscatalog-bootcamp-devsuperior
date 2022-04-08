@@ -14,6 +14,11 @@ const List = () => {
   const [page, setPage] = useState<SpringPage<Product>>();
 
   useEffect(() => {
+    getProduts();
+  }, []);
+
+  // função para observar quando deleta produto
+  const getProduts = () => {
     const config: AxiosRequestConfig = {
       method: 'GET',
       url: '/products',
@@ -26,7 +31,7 @@ const List = () => {
     requestBackend(config).then((response) => {
       setPage(response.data);
     });
-  }, []);
+  };
 
   return (
     <div className="product-crud-container">
@@ -43,7 +48,7 @@ const List = () => {
       <div className="row">
         {page?.content.map((product) => (
           <div key={product.id} className="col-sm-6 col-md-12">
-            <ProductCrudCard product={product} />
+            <ProductCrudCard product={product} onDelete={() => getProduts()} />
           </div>
         ))}
       </div>
