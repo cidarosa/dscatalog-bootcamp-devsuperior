@@ -1,7 +1,9 @@
 import { AxiosRequestConfig } from 'axios';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
+import Select from 'react-select';
+import { Category } from 'types/category';
 import { Product } from 'types/product';
 import { requestBackend } from 'util/requests';
 import './styles.css';
@@ -11,11 +13,21 @@ type UrlParams = {
 };
 
 const Form = () => {
+  //para a combobox - testar
+  /* const options = [
+    { value: 'chocolate', label: 'Chocolate' },
+    { value: 'strawberry', label: 'Strawberry' },
+    { value: 'vanilla', label: 'Vanilla' },
+  ]; */
+
   const { productId } = useParams<UrlParams>();
 
   const isEditing = productId !== 'create';
 
   const history = useHistory();
+
+  //pegar categorias do backend
+  const [selectCategories, setSelectCategories] = useState<Category[]>([]); //iniciando com lista vazia
 
   const {
     register,
@@ -24,6 +36,13 @@ const Form = () => {
     // para ver se está editando ou criando um novo produto
     setValue, //permite definir um valor de algum atributo
   } = useForm<Product>();
+
+  //para buscar da API as categorias e armazenar no selectCategories
+  useEffect(() => {
+    requestBackend({ url: '/categories' }).then((response) => {
+      setSelectCategories(response.data.content);
+    });
+  }, []);
 
   // para fazer no começo qdo o componente for montado
   useEffect(() => {
@@ -54,7 +73,7 @@ const Form = () => {
     /* configuração da requesição para salvar o Product */
     const config: AxiosRequestConfig = {
       method: isEditing ? 'PUT' : 'POST',
-      url: isEditing ?  `/products/${productId}` : '/products',
+      url: isEditing ? `/products/${productId}` : '/products',
       //data: formData, //dados que serão passados
       // data: data, //não precisa colocar qdo o nome da variável é igual ao atributo
       data,
@@ -95,6 +114,16 @@ const Form = () => {
                 <div className="invalid-feedback d-block">
                   {errors.name?.message}
                 </div>
+              </div>
+
+              <div className="margin-bottom-30">
+                <Select
+                  options={selectCategories}
+                  classNamePrefix="product-crud-select"
+                  isMulti
+                  getOptionLabel={(category: Category) => category.name}
+                  getOptionValue={(category: Category) => String(category.id)}
+                />
               </div>
 
               <div className="margin-bottom-30">
