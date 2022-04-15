@@ -1,6 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import Select from 'react-select';
 import { Category } from 'types/category';
@@ -35,6 +35,7 @@ const Form = () => {
     formState: { errors },
     // para ver se está editando ou criando um novo produto
     setValue, //permite definir um valor de algum atributo
+    control, //para o combobox
   } = useForm<Product>();
 
   //para buscar da API as categorias e armazenar no selectCategories
@@ -117,13 +118,29 @@ const Form = () => {
               </div>
 
               <div className="margin-bottom-30">
-                <Select
-                  options={selectCategories}
-                  classNamePrefix="product-crud-select"
-                  isMulti
-                  getOptionLabel={(category: Category) => category.name}
-                  getOptionValue={(category: Category) => String(category.id)}
+                <Controller
+                  name="categories" //mesmo nome do state, form, type product
+                  rules={{ required: true }}
+                  control={control}
+                  render={({ field }) => (
+                    <Select
+                      {...field}
+                      options={selectCategories}
+                      classNamePrefix="product-crud-select"
+                      isMulti
+                      getOptionLabel={(category: Category) => category.name}
+                      getOptionValue={(category: Category) =>
+                        String(category.id)
+                      }
+                    />
+                  )}
                 />
+
+                {errors.categories && (
+                  <div className="invalid-feedback d-block">
+                   Campo obrigatório
+                  </div>
+                )}
               </div>
 
               <div className="margin-bottom-30">
