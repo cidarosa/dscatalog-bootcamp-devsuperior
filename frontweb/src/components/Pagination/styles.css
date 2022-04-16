@@ -22,14 +22,20 @@
   background-color: #407bff;
 }
 
-.arrow-previous{
-    transform: rotate(-180deg);
+.pagination-link-active {
+  background-color: #407bff;
 }
-.arrow-next{
-    margin-left: 10px;
+
+.arrow-previous {
+  color: #407bff;
+  transform: rotate(-180deg);
+}
+.arrow-next {
+  color: #407bff;
+  margin-left: 10px;
 }
 .arrow-inactive {
-  color: #e1e1e1; 
+  color: #e1e1e1;
 }
 .arrow-active {
   color: #407bff;

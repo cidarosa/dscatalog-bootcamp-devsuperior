@@ -8,6 +8,8 @@ import { Product } from 'types/product';
 import { AxiosRequestConfig } from 'axios';
 import { requestBackend } from 'util/requests';
 
+import Pagination from 'components/Pagination';
+
 import './styles.css';
 
 const List = () => {
@@ -52,6 +54,8 @@ const List = () => {
           </div>
         ))}
       </div>
+
+      <Pagination />
     </div>
   );
 };
