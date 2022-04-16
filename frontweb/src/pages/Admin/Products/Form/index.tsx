@@ -1,5 +1,6 @@
 import { AxiosRequestConfig } from 'axios';
 import { useEffect, useState } from 'react';
+import CurrencyInput from 'react-currency-input-field';
 import { useForm, Controller } from 'react-hook-form';
 import { useHistory, useParams } from 'react-router-dom';
 import Select from 'react-select';
@@ -63,6 +64,13 @@ const Form = () => {
   }, [isEditing, productId, setValue]); //dependências
 
   const onSubmit = (formData: Product) => {
+    //para formatar o preço, com ponto para casas decimais
+
+    const data = {
+      ...formData,
+      price: String(formData.price).replace(',', '.'),
+    };
+
     /*    const data = {
       ...formData,
       imgUrl: isEditing
@@ -77,7 +85,8 @@ const Form = () => {
       url: isEditing ? `/products/${productId}` : '/products',
       //data: formData, //dados que serão passados
       // data: data, //não precisa colocar qdo o nome da variável é igual ao atributo
-      data: formData,
+      //data: formData,
+      data,
       withCredentials: true,
       /* tem que estar autenticado para passar a requisção */
     };
@@ -144,6 +153,28 @@ const Form = () => {
               </div>
 
               <div className="margin-bottom-30">
+                <Controller
+                  name="price"
+                  rules={{ required: 'Campo obrigatório' }}
+                  control={control}
+                  render={({ field }) => (
+                    <CurrencyInput
+                      placeholder="Preço"
+                      className={`form-control base-input ${
+                        errors.price ? 'is-invalid' : ''
+                      } `}
+                      disableGroupSeparators={true}
+                      value={field.value}
+                      onValueChange={field.onChange}
+                    />
+                  )}
+                />
+                <div className="invalid-feedback d-block">
+                  {errors.price?.message}
+                </div>
+              </div>
+
+              {/* <div className="margin-bottom-30">
                 <input
                   {...register('price', {
                     required: 'Campo obrigatório',
@@ -158,17 +189,20 @@ const Form = () => {
                 <div className="invalid-feedback d-block">
                   {errors.price?.message}
                 </div>
-              </div>
+              </div> */}
 
               <div className="margin-bottom-30">
                 <input
+                  value={
+                    'https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg'
+                  }
                   {...register('imgUrl', {
                     required: 'Campo obrigatório',
                     pattern: {
-                        value: /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm,
-                        message: 'URL inválida'
-                    }
-                })}
+                      value: /^(https?|chrome):\/\/[^\s$.?#].[^\s]*$/gm,
+                      message: 'URL inválida',
+                    },
+                  })}
                   type="text"
                   className={`form-control base-input ${
                     errors.name ? 'is-invalid' : ''
