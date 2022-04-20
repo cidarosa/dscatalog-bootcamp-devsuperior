@@ -1,7 +1,7 @@
 import { Link } from 'react-router-dom';
 import ProductCrudCard from 'pages/Admin/Products/ProductCrudCard';
 
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { SpringPage } from 'types/vendor/spring';
 import { Product } from 'types/product';
 
@@ -12,20 +12,31 @@ import Pagination from 'components/Pagination';
 
 import './styles.css';
 
+// guardar estado dos controles - paginação e filtragem
+type ControlComponentsData = {
+  activePage: number; //indica qual página está ativa, vem do comp. paginação
+};
+
 const List = () => {
+  // estado da página
   const [page, setPage] = useState<SpringPage<Product>>();
 
-  useEffect(() => {
-    getProduts(0);
-  }, []);
+  // guardar estado dos controles - paginação e filtragem
+  const [controlComponentsData, setControlComponentsData] =
+    useState<ControlComponentsData>({
+      activePage: 0,
+    });
 
-  // função para observar quando deleta produto
-  const getProduts = (pageNumber : number) => {
+  const handlePageChange = (pageNumber: number) => {
+    setControlComponentsData({ activePage: pageNumber });
+  };
+
+  const getProducts = useCallback(() => {
     const config: AxiosRequestConfig = {
       method: 'GET',
       url: '/products',
       params: {
-        page: pageNumber,
+        page: controlComponentsData.activePage,
         size: 3,
       },
     };
@@ -33,7 +44,11 @@ const List = () => {
     requestBackend(config).then((response) => {
       setPage(response.data);
     });
-  };
+  }, [controlComponentsData]);
+
+  useEffect(() => {
+    getProducts();
+  }, [getProducts]);
 
   return (
     <div className="product-crud-container">
@@ -50,16 +65,16 @@ const List = () => {
       <div className="row">
         {page?.content.map((product) => (
           <div key={product.id} className="col-sm-6 col-md-12">
-            <ProductCrudCard product={product} onDelete={() => getProduts(page.number)} />
+            <ProductCrudCard product={product} onDelete={getProducts} />
           </div>
         ))}
       </div>
       {/* parâmetros do  useState - SpringPage*/}
-      <Pagination 
-        pageCount={(page) ? page.totalPages : 0} 
+      <Pagination
+        pageCount={page ? page.totalPages : 0}
         range={3}
-        onChange={getProduts}
-        />
+        onChange={handlePageChange}
+      />
     </div>
   );
 };

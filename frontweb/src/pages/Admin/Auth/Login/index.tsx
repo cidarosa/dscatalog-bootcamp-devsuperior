@@ -73,6 +73,7 @@ const Login = () => {
                         className={`form-control base-input ${errors.username ? 'is-invalid' : ''} `}
                         placeholder="Email"
                         name="username"
+                        value={"maria@gmail.com"}
                     />
                     <div className="invalid-feedback d-block">{errors.username?.message}</div>
                 </div>
@@ -85,6 +86,7 @@ const Login = () => {
                         className={`form-control base-input ${errors.password ? 'is-invalid' : ''} `}
                         placeholder="Password"
                         name="password"
+                        value={"123456"}
                     />
                     <div className="invalid-feedback d-block">{errors.password?.message}</div>
                 </div>
