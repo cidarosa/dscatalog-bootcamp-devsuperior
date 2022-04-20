@@ -11,6 +11,7 @@ import { requestBackend } from 'util/requests';
 import Pagination from 'components/Pagination';
 
 import './styles.css';
+import ProductFilter from 'components/ProductFilter';
 
 // guardar estado dos controles - paginação e filtragem
 type ControlComponentsData = {
@@ -59,7 +60,7 @@ const List = () => {
           </button>
         </Link>
 
-        <div className="base-card product-filter-container">Search bar</div>
+        <ProductFilter />
       </div>
 
       <div className="row">
