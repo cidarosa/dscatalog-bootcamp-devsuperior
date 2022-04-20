@@ -16,17 +16,17 @@ const List = () => {
   const [page, setPage] = useState<SpringPage<Product>>();
 
   useEffect(() => {
-    getProduts();
+    getProduts(0);
   }, []);
 
   // função para observar quando deleta produto
-  const getProduts = () => {
+  const getProduts = (pageNumber : number) => {
     const config: AxiosRequestConfig = {
       method: 'GET',
       url: '/products',
       params: {
-        page: 0,
-        size: 50,
+        page: pageNumber,
+        size: 3,
       },
     };
 
@@ -50,12 +50,16 @@ const List = () => {
       <div className="row">
         {page?.content.map((product) => (
           <div key={product.id} className="col-sm-6 col-md-12">
-            <ProductCrudCard product={product} onDelete={() => getProduts()} />
+            <ProductCrudCard product={product} onDelete={() => getProduts(page.number)} />
           </div>
         ))}
       </div>
-
-      <Pagination />
+      {/* parâmetros do  useState - SpringPage*/}
+      <Pagination 
+        pageCount={(page) ? page.totalPages : 0} 
+        range={3}
+        onChange={getProduts}
+        />
     </div>
   );
 };
