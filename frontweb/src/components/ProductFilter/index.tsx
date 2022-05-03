@@ -9,17 +9,43 @@ import './styles.css';
 
 type ProductFilterData = {
   name: string;
-  category: Category;
+  category: Category | null; //recebe tipo Cate4gory ou null
 };
 
 const ProductFilter = () => {
   //pegar categorias do backend
   const [selectCategories, setSelectCategories] = useState<Category[]>([]); //iniciando com lista vazia
 
-  const { register, handleSubmit, control } = useForm<ProductFilterData>();
+  const { register, handleSubmit, setValue, getValues, control } =
+    useForm<ProductFilterData>();
 
   const onSubmit = (formData: ProductFilterData) => {
     console.log('ENVIOU ', formData);
+  };
+
+  const handleFormClear = () => {
+    //limpar valores do FORM para vazio e nulo
+    // usa setValue do useForm => campo, valor
+    setValue('name', '');
+    setValue('category', null);
+  };
+
+  //usa tipo Category
+  //para quando mudar a categoria no select
+  const handleChangeCategory = (value: Category) => {
+    setValue('category', value); //set novo valor de category
+    //envia os dados do form com o novo valor
+
+    //pegar os dados do form
+    //obj do tipo  //usar getValues do useForm
+    const obj: ProductFilterData = {
+      //usar getValues do useForm
+      name: getValues('name'),
+      category: getValues('category'),
+    };
+
+    //provisório
+    console.log('ENVIOU ', obj);
   };
 
   //para buscar da API as categorias e armazenar no selectCategories
@@ -58,14 +84,18 @@ const ProductFilter = () => {
                   isClearable
                   placeholder="Categoria"
                   classNamePrefix="product-filter-select"
+                  onChange={(value) => handleChangeCategory(value as Category)} //casting
                   getOptionLabel={(category: Category) => category.name}
                   getOptionValue={(category: Category) => String(category.id)}
                 />
               )}
             />
           </div>
-          <button className="btn btn-outline-secondary btn-product-filter-clear">
-            LIMPAR<span className='btn-product-filter-word'> FILTRO</span>
+          <button
+            onClick={handleFormClear}
+            className="btn btn-outline-secondary btn-product-filter-clear"
+          >
+            LIMPAR<span className="btn-product-filter-word"> FILTRO</span>
           </button>
         </div>
       </form>
