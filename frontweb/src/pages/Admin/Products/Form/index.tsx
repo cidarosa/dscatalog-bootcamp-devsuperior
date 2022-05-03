@@ -7,6 +7,7 @@ import Select from 'react-select';
 import { Category } from 'types/category';
 import { Product } from 'types/product';
 import { requestBackend } from 'util/requests';
+import { toast } from 'react-toastify';
 import './styles.css';
 
 type UrlParams = {
@@ -91,9 +92,14 @@ const Form = () => {
       /* tem que estar autenticado para passar a requisção */
     };
 
-    requestBackend(config).then(() => {
-      history.push('/admin/products'); //volta para a tela anterior
-    });
+    requestBackend(config)
+      .then(() => {
+        toast.info('Produto cadastrado com sucesso!');
+        history.push('/admin/products'); //volta para a tela anterior
+      })
+      .catch(() => {
+        toast.error('Erro ao cadastrar o produto');
+      });
   };
 
   const handleCancel = () => {
