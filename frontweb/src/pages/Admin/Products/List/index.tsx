@@ -10,12 +10,15 @@ import { requestBackend } from 'util/requests';
 
 import Pagination from 'components/Pagination';
 
+import ProductFilter, { ProductFilterData } from 'components/ProductFilter';
+
 import './styles.css';
-import ProductFilter from 'components/ProductFilter';
 
 // guardar estado dos controles - paginação e filtragem
 type ControlComponentsData = {
   activePage: number; //indica qual página está ativa, vem do comp. paginação
+  //para a filtragem
+  filterData: ProductFilterData;
 };
 
 const List = () => {
@@ -26,10 +29,23 @@ const List = () => {
   const [controlComponentsData, setControlComponentsData] =
     useState<ControlComponentsData>({
       activePage: 0,
+      //dados iniciais
+      filterData: { name: '', category: null },
     });
 
   const handlePageChange = (pageNumber: number) => {
-    setControlComponentsData({ activePage: pageNumber });
+    setControlComponentsData({
+      activePage: pageNumber,
+      filterData: controlComponentsData.filterData,
+    });
+  };
+
+  //type ProductFilterData está como export
+  const handleSubmitFilter = (data: ProductFilterData) => {
+    setControlComponentsData({
+      activePage: 0,
+      filterData: data,
+    });
   };
 
   const getProducts = useCallback(() => {
@@ -39,6 +55,8 @@ const List = () => {
       params: {
         page: controlComponentsData.activePage,
         size: 3,
+        name: controlComponentsData.filterData.name,
+        categoryId: controlComponentsData.filterData.category?.id,
       },
     };
 
@@ -60,7 +78,7 @@ const List = () => {
           </button>
         </Link>
 
-        <ProductFilter />
+        <ProductFilter onSubmitFilter={handleSubmitFilter} />
       </div>
 
       <div className="row">
@@ -72,6 +90,7 @@ const List = () => {
       </div>
       {/* parâmetros do  useState - SpringPage*/}
       <Pagination
+        forcePage={page?.number}
         pageCount={page ? page.totalPages : 0}
         range={3}
         onChange={handlePageChange}

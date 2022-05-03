@@ -7,12 +7,16 @@ import { requestBackend } from 'util/requests';
 
 import './styles.css';
 
-type ProductFilterData = {
+export type ProductFilterData = {
   name: string;
   category: Category | null; //recebe tipo Cate4gory ou null
 };
 
-const ProductFilter = () => {
+type Props = {
+  onSubmitFilter: (data: ProductFilterData) => void;
+};
+
+const ProductFilter = ({ onSubmitFilter }: Props) => {
   //pegar categorias do backend
   const [selectCategories, setSelectCategories] = useState<Category[]>([]); //iniciando com lista vazia
 
@@ -20,7 +24,8 @@ const ProductFilter = () => {
     useForm<ProductFilterData>();
 
   const onSubmit = (formData: ProductFilterData) => {
-    console.log('ENVIOU ', formData);
+    // console.log('ENVIOU ', formData);
+    onSubmitFilter(formData);
   };
 
   const handleFormClear = () => {
@@ -45,7 +50,8 @@ const ProductFilter = () => {
     };
 
     //provisório
-    console.log('ENVIOU ', obj);
+    // console.log('ENVIOU ', obj);
+    onSubmitFilter(obj);
   };
 
   //para buscar da API as categorias e armazenar no selectCategories
