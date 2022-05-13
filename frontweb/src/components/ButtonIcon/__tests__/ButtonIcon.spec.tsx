@@ -3,7 +3,7 @@ import ButtonIcon from '..';
 
 test('ButtonIcon should render button with given text', () => {
   //ARRANGE
-  const text = "Fazer Login";
+  const text = 'Fazer Login';
 
   //ACT
   //Renderizar o HTML
@@ -18,4 +18,8 @@ test('ButtonIcon should render button with given text', () => {
   // Queries da Testing Library para encontrar elementos
   // https://testing-library.com/docs/queries/about
   expect(screen.getByText(text)).toBeInTheDocument();
+
+  //
+  expect(screen.getByTestId("arrow")).toBeInTheDocument();
 });
+
