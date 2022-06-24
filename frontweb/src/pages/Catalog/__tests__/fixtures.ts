@@ -1,4 +1,4 @@
-import { BASE_URL } from './../../../util/requests';
+import { BASE_URL } from 'util/requests';
 import { rest } from 'msw';
 import { setupServer } from 'msw/node';
 
