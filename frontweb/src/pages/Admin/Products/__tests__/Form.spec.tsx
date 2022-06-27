@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify';
 import history from 'util/history';
 import Form from '../Form';
 
-import { server } from './fixtures';
+import { productResponse, server } from './fixtures';
 
 //server mockado
 beforeAll(() => {
@@ -82,9 +82,7 @@ describe('Product form create tests', () => {
     //testando se redireciona correto
 
     expect(history.location.pathname).toEqual('/admin/products');
-
   });
-
 
   test('should show 5 validation messages when just clicking submit', async () => {
     render(
@@ -94,25 +92,18 @@ describe('Product form create tests', () => {
       </Router>
     );
 
-     
-
     //selecionando o botão
     const submitButton = screen.getByRole('button', { name: /salvar/i });
 
     //simulando o click no botão
     userEvent.click(submitButton);
 
-    await waitFor( () => {
+    await waitFor(() => {
       const messages = screen.getAllByText('Campo obrigatório');
 
       expect(messages).toHaveLength(5);
-
     });
-
-
   });
-
-
 
   test('should clear validation messages when filling out the form correctely', async () => {
     render(
@@ -122,8 +113,6 @@ describe('Product form create tests', () => {
       </Router>
     );
 
-     
-
     //selecionando o botão
     const submitButton = screen.getByRole('button', { name: /salvar/i });
 
@@ -132,11 +121,10 @@ describe('Product form create tests', () => {
 
     //erros de não preencimento
 
-    await waitFor( () => {
+    await waitFor(() => {
       const messages = screen.getAllByText('Campo obrigatório');
 
       expect(messages).toHaveLength(5);
-
     });
 
     //preenchendo o formulario
@@ -148,7 +136,7 @@ describe('Product form create tests', () => {
     // Categorias -> texto que foi colocado no Label do select do form
     const categoriesInput = screen.getByLabelText('Categorias');
 
-      //pegando do Combo
+    //pegando do Combo
     await selectEvent.select(categoriesInput, ['Eletrônicos', 'Computadores']);
     //simulando a digitaçao nas caixas de texto
     userEvent.type(nameInput, 'Computador');
@@ -161,13 +149,71 @@ describe('Product form create tests', () => {
 
     //testar se não tem mais as mensagens de erro
     //query se não achar os erros
-    await waitFor( () => {
+    await waitFor(() => {
       const messages = screen.queryAllByText('Campo obrigatório');
 
       expect(messages).toHaveLength(0);
+    });
+  });
+});
 
+describe('Product form update tests', () => {
+  beforeEach(() => {
+    (useParams as jest.Mock).mockReturnValue({
+      productId: '2',
+    });
+  });
+
+  test('should show toast and redirect when submit form correctly', async () => {
+    render(
+      //precisa usar o Router por causa do Swuitch
+      <Router history={history}>
+        <ToastContainer />
+        <Form />
+      </Router>
+    );
+
+    await waitFor(() => {
+      const nameInput = screen.getByTestId('name');
+      const priceInput = screen.getByTestId('price');
+      const imgUrlInput = screen.getByTestId('imgUrl');
+      const descriptionInput = screen.getByTestId('description');
+
+      //colocado no return do form
+      // data-testid="form"
+    const formElement = screen.getByTestId("form");
+
+
+      // testando se tem valor nos texts,
+      // valor que está mockado na fixture
+      // productResponse da fixture foi exportado
+      expect(nameInput).toHaveValue(productResponse.name);
+      expect(priceInput).toHaveValue(String(productResponse.price)); //convertende pra string o que está mockado
+      expect(imgUrlInput).toHaveValue(productResponse.imgUrl);
+      expect(descriptionInput).toHaveValue(productResponse.description);
+
+      //pegando hardcode
+      //expect(formElement).toHaveFormValues({categories: ["2", '3']});
+      //pegando dinâmico
+      const ids = productResponse.categories.map(x => String(x.id));
+      expect(formElement).toHaveFormValues({categories: ids});
     });
 
+    //selecionando o botão
+    const submitButton = screen.getByRole('button', { name: /salvar/i });
 
+    //simulando o click no botão
+    userEvent.click(submitButton);
+
+    //verifica toast
+    await waitFor(() => {
+      const toastElement = screen.getByText('Produto cadastrado com sucesso!');
+      expect(toastElement).toBeInTheDocument();
+    });
+
+    //não precisa colocar await novamente
+    //testando se redireciona correto
+
+    expect(history.location.pathname).toEqual('/admin/products');
   });
 });
