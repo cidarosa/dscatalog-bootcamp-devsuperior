@@ -38,7 +38,7 @@ describe('Product form create tests', () => {
     });
   });
 
-  test('should render Form', async () => {
+  test('should show toast and redirect when submit form correctly', async () => {
     render(
       //precisa usar o Router por causa do Swuitch
       <Router history={history}>
@@ -72,9 +72,16 @@ describe('Product form create tests', () => {
     //simulando o click no botão
     userEvent.click(submitButton);
 
+    //verifica toast
     await waitFor(() => {
       const toastElement = screen.getByText('Produto cadastrado com sucesso!');
       expect(toastElement).toBeInTheDocument();
     });
+
+    //não precisa colocar await novamente
+    //testando se redireciona correto
+
+    expect(history.location.pathname).toEqual('/admin/products');
+
   });
 });
