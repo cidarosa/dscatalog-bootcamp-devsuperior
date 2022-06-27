@@ -155,9 +155,7 @@ const Form = () => {
                 />
 
                 {errors.categories && (
-                  <div className="invalid-feedback d-block">
-                    Campo obrigatório
-                  </div>
+                  <div className="invalid-feedback d-block">Campo obrigatório</div>
                 )}
               </div>
 
@@ -203,9 +201,9 @@ const Form = () => {
 
               <div className="margin-bottom-30">
                 <input
-                  value={
-                    'https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg'
-                  }
+                  // value={
+                  //   'https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg'
+                  // }
                   {...register('imgUrl', {
                     required: 'Campo obrigatório',
                     pattern: {

@@ -84,4 +84,90 @@ describe('Product form create tests', () => {
     expect(history.location.pathname).toEqual('/admin/products');
 
   });
+
+
+  test('should show 5 validation messages when just clicking submit', async () => {
+    render(
+      //precisa usar o Router por causa do Swuitch
+      <Router history={history}>
+        <Form />
+      </Router>
+    );
+
+     
+
+    //selecionando o botão
+    const submitButton = screen.getByRole('button', { name: /salvar/i });
+
+    //simulando o click no botão
+    userEvent.click(submitButton);
+
+    await waitFor( () => {
+      const messages = screen.getAllByText('Campo obrigatório');
+
+      expect(messages).toHaveLength(5);
+
+    });
+
+
+  });
+
+
+
+  test('should clear validation messages when filling out the form correctely', async () => {
+    render(
+      //precisa usar o Router por causa do Swuitch
+      <Router history={history}>
+        <Form />
+      </Router>
+    );
+
+     
+
+    //selecionando o botão
+    const submitButton = screen.getByRole('button', { name: /salvar/i });
+
+    //simulando o click no botão
+    userEvent.click(submitButton);
+
+    //erros de não preencimento
+
+    await waitFor( () => {
+      const messages = screen.getAllByText('Campo obrigatório');
+
+      expect(messages).toHaveLength(5);
+
+    });
+
+    //preenchendo o formulario
+    const nameInput = screen.getByTestId('name');
+    const priceInput = screen.getByTestId('price');
+    const imgUrlInput = screen.getByTestId('imgUrl');
+    const descriptionInput = screen.getByTestId('description');
+
+    // Categorias -> texto que foi colocado no Label do select do form
+    const categoriesInput = screen.getByLabelText('Categorias');
+
+      //pegando do Combo
+    await selectEvent.select(categoriesInput, ['Eletrônicos', 'Computadores']);
+    //simulando a digitaçao nas caixas de texto
+    userEvent.type(nameInput, 'Computador');
+    userEvent.type(priceInput, '5000.12');
+    userEvent.type(
+      imgUrlInput,
+      'https://raw.githubusercontent.com/devsuperior/dscatalog-resources/master/backend/img/1-big.jpg'
+    );
+    userEvent.type(descriptionInput, 'Computador muito bom');
+
+    //testar se não tem mais as mensagens de erro
+    //query se não achar os erros
+    await waitFor( () => {
+      const messages = screen.queryAllByText('Campo obrigatório');
+
+      expect(messages).toHaveLength(0);
+
+    });
+
+
+  });
 });
